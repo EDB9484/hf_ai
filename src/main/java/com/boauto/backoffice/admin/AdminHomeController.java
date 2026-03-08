@@ -10,4 +10,9 @@ public class AdminHomeController {
     public String index() {
         return "admin/index";
     }
+
+    @GetMapping("/admin/ia/member-info")
+    public String memberInfo() {
+        return "admin/member-info";
+    }
 }

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>라운드 페이 회원정보조회</title>
+    <style>
+        :root {
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --line: #d1d5db;
+            --head: #f9fafb;
+            --text: #111827;
+            --muted: #6b7280;
+            --primary: #1f4f8f;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .breadcrumb {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        h1 {
+            margin: 0 0 18px;
+            font-size: 28px;
+        }
+
+        .help {
+            padding: 12px 14px;
+            border-radius: 8px;
+            background: #eef4ff;
+            border: 1px solid #d4e3ff;
+            margin-bottom: 14px;
+            color: #334155;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .filters {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 14px;
+            background: #fcfcfd;
+            margin-bottom: 14px;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .row:last-child { margin-bottom: 0; }
+
+        .label {
+            min-width: 80px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        input, select {
+            height: 32px;
+            border: 1px solid #c7ced8;
+            border-radius: 6px;
+            padding: 0 8px;
+            background: #fff;
+            font-size: 13px;
+        }
+
+        .text-sm { width: 130px; }
+        .text-md { width: 180px; }
+
+        .radio {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-right: 6px;
+            font-size: 13px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+
+        .btn {
+            height: 32px;
+            padding: 0 12px;
+            border: 1px solid #9ca3af;
+            border-radius: 6px;
+            background: #fff;
+            color: #1f2937;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn.primary {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .list-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 14px 0 8px;
+            font-size: 13px;
+        }
+
+        .list-head strong { font-size: 14px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 12px;
+        }
+
+        th, td {
+            border: 1px solid var(--line);
+            padding: 8px 6px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        th {
+            background: var(--head);
+            font-weight: 700;
+        }
+
+        .pager {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #4b5563;
+        }
+
+        .link {
+            margin-top: 12px;
+        }
+
+        .link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        @media (max-width: 900px) {
+            .container { padding: 14px; }
+            .panel { padding: 14px; }
+            table { font-size: 11px; }
+            .row { gap: 6px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="breadcrumb">관리자 &gt; 라운드 페이 회원 관리 &gt; 회원정보조회</div>
+
+    <section class="panel">
+        <h1>라운드 페이 회원정보조회</h1>
+
+        <div class="help">
+            정책 기준에 따른 회원 조회 화면입니다. 가입일, 회원 조회 조건, 생년월일, 성별, 회원 상태, 이용 제한 조건으로 검색할 수 있습니다.
+        </div>
+
+        <div class="filters">
+            <div class="row">
+                <span class="label">가입일</span>
+                <input class="text-sm" type="text" placeholder="yyyy-mm-dd">
+                <span>~</span>
+                <input class="text-sm" type="text" placeholder="yyyy-mm-dd">
+            </div>
+
+            <div class="row">
+                <span class="label">회원 조회</span>
+                <select>
+                    <option>휴대폰번호</option>
+                    <option>이름</option>
+                    <option>고객ID</option>
+                </select>
+                <input class="text-md" type="text" placeholder="검색어 입력">
+
+                <span class="label">생년월일</span>
+                <input class="text-sm" type="text" placeholder="YYYYMMDD">
+
+                <span class="label">성별</span>
+                <label class="radio"><input type="radio" name="gender" checked>전체</label>
+                <label class="radio"><input type="radio" name="gender">남</label>
+                <label class="radio"><input type="radio" name="gender">여</label>
+            </div>
+
+            <div class="row">
+                <span class="label">회원 상태</span>
+                <label class="radio"><input type="radio" name="memberStatus" checked>전체</label>
+                <label class="radio"><input type="radio" name="memberStatus">정회원</label>
+                <label class="radio"><input type="radio" name="memberStatus">준회원</label>
+                <label class="radio"><input type="radio" name="memberStatus">탈퇴오류</label>
+
+                <span class="label">이용 제한</span>
+                <label class="radio"><input type="radio" name="restriction" checked>전체</label>
+                <label class="radio"><input type="radio" name="restriction">정상</label>
+                <label class="radio"><input type="radio" name="restriction">관리자 제한</label>
+            </div>
+
+            <div class="actions">
+                <button class="btn" type="button">초기화</button>
+                <button class="btn primary" type="button">검색</button>
+            </div>
+        </div>
+
+        <div class="list-head">
+            <strong>총 89,272건, 검색결과 10건</strong>
+            <div>
+                페이지당
+                <select>
+                    <option>10</option>
+                    <option>20</option>
+                    <option>50</option>
+                </select>
+                <button class="btn" type="button">엑셀 다운로드</button>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>가입일시</th>
+                <th>이름</th>
+                <th>휴대폰번호</th>
+                <th>고객ID</th>
+                <th>생년월일</th>
+                <th>성별</th>
+                <th>회원 구분</th>
+                <th>정회원 전환 일시</th>
+                <th>이용 제한</th>
+                <th>유입 채널</th>
+                <th>관리</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>2025-03-13 15:02:14</td>
+                <td>홍*동</td>
+                <td>010-****-1234</td>
+                <td>RRP20250314032111</td>
+                <td>95****</td>
+                <td>남</td>
+                <td>정회원</td>
+                <td>2025-03-13 16:03:14</td>
+                <td>정상</td>
+                <td>라운드</td>
+                <td><button class="btn" type="button">수정</button></td>
+            </tr>
+            <tr>
+                <td>2025-03-16 10:02:45</td>
+                <td>이*영</td>
+                <td>010-****-8456</td>
+                <td>RRP20250851789532</td>
+                <td>04****</td>
+                <td>여</td>
+                <td>준회원</td>
+                <td>-</td>
+                <td>관리자 제한</td>
+                <td>휘슬</td>
+                <td><button class="btn" type="button">수정</button></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="pager">
+            <span>1-10 / 89,272</span>
+            <span>이전 1 2 3 ... 다음</span>
+        </div>
+
+        <div class="link">
+            <a th:href="@{/admin}">관리자 홈으로 이동</a>
+        </div>
+    </section>
+</div>
+</body>
+</html>
