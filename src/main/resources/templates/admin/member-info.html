@@ -128,6 +128,13 @@
             color: #fff;
         }
 
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
         .list-head {
             display: flex;
             justify-content: space-between;
@@ -168,6 +175,27 @@
             color: #4b5563;
         }
 
+        .page-links {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .page-links a {
+            text-decoration: none;
+            color: #4b5563;
+            border: 1px solid var(--line);
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #fff;
+        }
+
+        .page-links a.active {
+            color: #fff;
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
         .link {
             margin-top: 12px;
         }
@@ -197,59 +225,67 @@
             정책 기준에 따른 회원 조회 화면입니다. 가입일, 회원 조회 조건, 생년월일, 성별, 회원 상태, 이용 제한 조건으로 검색할 수 있습니다.
         </div>
 
-        <div class="filters">
+        <form class="filters" method="get" th:action="@{/admin/ia/member-info}">
+            <input type="hidden" name="page" value="1">
+
             <div class="row">
                 <span class="label">가입일</span>
-                <input class="text-sm" type="text" placeholder="yyyy-mm-dd">
+                <input class="text-sm" type="text" name="joinedFrom" placeholder="yyyy-mm-dd" th:value="${criteria.joinedFrom}">
                 <span>~</span>
-                <input class="text-sm" type="text" placeholder="yyyy-mm-dd">
+                <input class="text-sm" type="text" name="joinedTo" placeholder="yyyy-mm-dd" th:value="${criteria.joinedTo}">
             </div>
 
             <div class="row">
                 <span class="label">회원 조회</span>
-                <select>
-                    <option>휴대폰번호</option>
-                    <option>이름</option>
-                    <option>고객ID</option>
+                <select name="searchType">
+                    <option value="PHONE" th:selected="${criteria.searchType == 'PHONE'}">휴대폰번호</option>
+                    <option value="NAME" th:selected="${criteria.searchType == 'NAME'}">이름</option>
+                    <option value="CUSTOMER_ID" th:selected="${criteria.searchType == 'CUSTOMER_ID'}">고객ID</option>
                 </select>
-                <input class="text-md" type="text" placeholder="검색어 입력">
+                <input class="text-md" type="text" name="keyword" placeholder="검색어 입력" th:value="${criteria.keyword}">
 
                 <span class="label">생년월일</span>
-                <input class="text-sm" type="text" placeholder="YYYYMMDD">
+                <input class="text-sm" type="text" name="birthDate" placeholder="YY" th:value="${criteria.birthDate}">
 
                 <span class="label">성별</span>
-                <label class="radio"><input type="radio" name="gender" checked>전체</label>
-                <label class="radio"><input type="radio" name="gender">남</label>
-                <label class="radio"><input type="radio" name="gender">여</label>
+                <label class="radio"><input type="radio" name="gender" value="ALL" th:checked="${criteria.gender == 'ALL'}">전체</label>
+                <label class="radio"><input type="radio" name="gender" value="M" th:checked="${criteria.gender == 'M'}">남</label>
+                <label class="radio"><input type="radio" name="gender" value="F" th:checked="${criteria.gender == 'F'}">여</label>
             </div>
 
             <div class="row">
                 <span class="label">회원 상태</span>
-                <label class="radio"><input type="radio" name="memberStatus" checked>전체</label>
-                <label class="radio"><input type="radio" name="memberStatus">정회원</label>
-                <label class="radio"><input type="radio" name="memberStatus">준회원</label>
-                <label class="radio"><input type="radio" name="memberStatus">탈퇴오류</label>
+                <label class="radio"><input type="radio" name="memberStatus" value="ALL" th:checked="${criteria.memberStatus == 'ALL'}">전체</label>
+                <label class="radio"><input type="radio" name="memberStatus" value="REGULAR" th:checked="${criteria.memberStatus == 'REGULAR'}">정회원</label>
+                <label class="radio"><input type="radio" name="memberStatus" value="PRE_REGULAR" th:checked="${criteria.memberStatus == 'PRE_REGULAR'}">준회원</label>
+                <label class="radio"><input type="radio" name="memberStatus" value="WITHDRAW_ERROR" th:checked="${criteria.memberStatus == 'WITHDRAW_ERROR'}">탈퇴오류</label>
 
                 <span class="label">이용 제한</span>
-                <label class="radio"><input type="radio" name="restriction" checked>전체</label>
-                <label class="radio"><input type="radio" name="restriction">정상</label>
-                <label class="radio"><input type="radio" name="restriction">관리자 제한</label>
+                <label class="radio"><input type="radio" name="restriction" value="ALL" th:checked="${criteria.restriction == 'ALL'}">전체</label>
+                <label class="radio"><input type="radio" name="restriction" value="NORMAL" th:checked="${criteria.restriction == 'NORMAL'}">정상</label>
+                <label class="radio"><input type="radio" name="restriction" value="ADMIN_LIMITED" th:checked="${criteria.restriction == 'ADMIN_LIMITED'}">관리자 제한</label>
             </div>
 
             <div class="actions">
-                <button class="btn" type="button">초기화</button>
-                <button class="btn primary" type="button">검색</button>
+                <a class="btn btn-link" th:href="@{/admin/ia/member-info}">초기화</a>
+                <button class="btn primary" type="submit">검색</button>
             </div>
-        </div>
+        </form>
 
         <div class="list-head">
-            <strong>총 89,272건, 검색결과 10건</strong>
+            <strong th:text="|총 ${result.totalCount}건, 검색결과 ${result.filteredCount}건|"></strong>
             <div>
                 페이지당
-                <select>
-                    <option>10</option>
-                    <option>20</option>
-                    <option>50</option>
+                <select onchange="window.location.href=this.value">
+                    <option
+                        th:value="@{/admin/ia/member-info(page=1,size=10,joinedFrom=${criteria.joinedFrom},joinedTo=${criteria.joinedTo},searchType=${criteria.searchType},keyword=${criteria.keyword},birthDate=${criteria.birthDate},gender=${criteria.gender},memberStatus=${criteria.memberStatus},restriction=${criteria.restriction})}"
+                        th:selected="${criteria.size == 10}">10</option>
+                    <option
+                        th:value="@{/admin/ia/member-info(page=1,size=20,joinedFrom=${criteria.joinedFrom},joinedTo=${criteria.joinedTo},searchType=${criteria.searchType},keyword=${criteria.keyword},birthDate=${criteria.birthDate},gender=${criteria.gender},memberStatus=${criteria.memberStatus},restriction=${criteria.restriction})}"
+                        th:selected="${criteria.size == 20}">20</option>
+                    <option
+                        th:value="@{/admin/ia/member-info(page=1,size=50,joinedFrom=${criteria.joinedFrom},joinedTo=${criteria.joinedTo},searchType=${criteria.searchType},keyword=${criteria.keyword},birthDate=${criteria.birthDate},gender=${criteria.gender},memberStatus=${criteria.memberStatus},restriction=${criteria.restriction})}"
+                        th:selected="${criteria.size == 50}">50</option>
                 </select>
                 <button class="btn" type="button">엑셀 다운로드</button>
             </div>
@@ -272,38 +308,40 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>2025-03-13 15:02:14</td>
-                <td>홍*동</td>
-                <td>010-****-1234</td>
-                <td>RRP20250314032111</td>
-                <td>95****</td>
-                <td>남</td>
-                <td>정회원</td>
-                <td>2025-03-13 16:03:14</td>
-                <td>정상</td>
-                <td>라운드</td>
-                <td><button class="btn" type="button">수정</button></td>
+            <tr th:if="${#lists.isEmpty(result.members)}">
+                <td colspan="11">조회 결과가 없습니다.</td>
             </tr>
-            <tr>
-                <td>2025-03-16 10:02:45</td>
-                <td>이*영</td>
-                <td>010-****-8456</td>
-                <td>RRP20250851789532</td>
-                <td>04****</td>
-                <td>여</td>
-                <td>준회원</td>
-                <td>-</td>
-                <td>관리자 제한</td>
-                <td>휘슬</td>
+            <tr th:each="member : ${result.members}">
+                <td th:text="${member.joinedAt}"></td>
+                <td th:text="${member.name}"></td>
+                <td th:text="${member.phone}"></td>
+                <td th:text="${member.customerId}"></td>
+                <td th:text="${member.birthDate}"></td>
+                <td th:text="${member.gender}"></td>
+                <td th:text="${member.memberStatus}"></td>
+                <td th:text="${member.convertedAt}"></td>
+                <td th:text="${member.restriction}"></td>
+                <td th:text="${member.inflowChannel}"></td>
                 <td><button class="btn" type="button">수정</button></td>
             </tr>
             </tbody>
         </table>
 
         <div class="pager">
-            <span>1-10 / 89,272</span>
-            <span>이전 1 2 3 ... 다음</span>
+            <span th:text="|${result.pageStart}-${result.pageEnd} / ${result.filteredCount}|"></span>
+
+            <div class="page-links">
+                <a th:if="${result.hasPrev}"
+                   th:href="@{/admin/ia/member-info(page=${result.currentPage - 1},size=${criteria.size},joinedFrom=${criteria.joinedFrom},joinedTo=${criteria.joinedTo},searchType=${criteria.searchType},keyword=${criteria.keyword},birthDate=${criteria.birthDate},gender=${criteria.gender},memberStatus=${criteria.memberStatus},restriction=${criteria.restriction})}">이전</a>
+
+                <a th:each="p : ${result.pageNumbers}"
+                   th:text="${p}"
+                   th:classappend="${p == result.currentPage} ? 'active' : ''"
+                   th:href="@{/admin/ia/member-info(page=${p},size=${criteria.size},joinedFrom=${criteria.joinedFrom},joinedTo=${criteria.joinedTo},searchType=${criteria.searchType},keyword=${criteria.keyword},birthDate=${criteria.birthDate},gender=${criteria.gender},memberStatus=${criteria.memberStatus},restriction=${criteria.restriction})}"></a>
+
+                <a th:if="${result.hasNext}"
+                   th:href="@{/admin/ia/member-info(page=${result.currentPage + 1},size=${criteria.size},joinedFrom=${criteria.joinedFrom},joinedTo=${criteria.joinedTo},searchType=${criteria.searchType},keyword=${criteria.keyword},birthDate=${criteria.birthDate},gender=${criteria.gender},memberStatus=${criteria.memberStatus},restriction=${criteria.restriction})}">다음</a>
+            </div>
         </div>
 
         <div class="link">
