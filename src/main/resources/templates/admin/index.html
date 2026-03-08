@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backoffice Automation</title>
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4ecf5 100%);
+            color: #17202a;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+        }
+
+        main {
+            width: min(720px, calc(100% - 48px));
+            padding: 40px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.88);
+            box-shadow: 0 20px 60px rgba(23, 32, 42, 0.12);
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: clamp(2rem, 4vw, 3rem);
+        }
+
+        p {
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+
+        code {
+            padding: 0.15rem 0.4rem;
+            border-radius: 6px;
+            background: #eef3f8;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <h1>Backoffice Automation</h1>
+    <p>
+        Spring Boot skeleton is running. Admin UI lives under <code>templates/admin</code>,
+        and package scaffolding is ready for <code>admin</code>, <code>agent</code>, and <code>schema</code>.
+    </p>
+</main>
+</body>
+</html>

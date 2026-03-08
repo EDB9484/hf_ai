@@ -1,11 +1,18 @@
-plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.3.0'
-    id 'io.spring.dependency-management' version '1.1.5'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:4.0.2'
+    }
 }
 
-group = 'com.example'
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+
+group = 'com.boauto'
 version = '0.0.1-SNAPSHOT'
+description = 'AI-powered backoffice automation system'
 
 java {
     toolchain {
@@ -18,19 +25,15 @@ repositories {
 }
 
 dependencies {
-
+    implementation platform('org.springframework.boot:spring-boot-dependencies:4.0.2')
     implementation 'org.springframework.boot:spring-boot-starter-web'
-
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
-
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.0'
     runtimeOnly 'org.postgresql:postgresql'
 
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
