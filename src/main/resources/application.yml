@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: hf_ai
+  thymeleaf:
+    cache: false
+
+server:
+  port: 8080

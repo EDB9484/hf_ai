@@ -1,2 +1,10 @@
-rootProject.name = 'hf_ai'
+import org.gradle.api.initialization.resolve.RepositoriesMode
 
+dependencyResolutionManagement {
+    repositoriesMode = RepositoriesMode.PREFER_PROJECT
+    repositories {
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'hf_ai'
