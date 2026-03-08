@@ -1,9 +1,9 @@
 # AGENTS.md
 
-## 목적
-이 문서는 `hf_ai` 프로젝트에서 Codex가 코드를 생성/수정할 때 따를 기본 규칙을 정의한다.
+## Purpose
+This document defines the default rules Codex should follow when generating or modifying code in the `hf_ai` project.
 
-## 프로젝트 기본 스택
+## Project Stack
 - Java 21
 - Spring Boot
 - Gradle
@@ -11,39 +11,39 @@
 - MyBatis
 - PostgreSQL
 
-## 코드 생성 규칙
-- 기획 문서는 구현 참고 자료로 사용한다.
-- IA 문서, 설명용 번호, Description 패널 등 문서 전용 요소를 서비스 화면에 그대로 노출하지 않는다.
-- 화면은 운영 UI 기준으로 재구성한다. (메뉴/폼/테이블/페이징 등 실제 사용 구조 우선)
-- 초기 단계에서는 비즈니스 로직을 과도하게 넣지 않고, 동작 검증 가능한 최소 단위부터 구현한다.
-- 동작형 요청 시에는 서버-템플릿 연동까지 포함한다.
-  - 검색 파라미터 바인딩
-  - 필터링
-  - 페이징
-  - 빈 결과 처리
-- 샘플 데이터는 서비스 계층에서 관리하며, 이후 MyBatis + PostgreSQL로 교체 가능하게 구조를 분리한다.
+## Code Generation Rules
+- Treat planning documents as implementation references.
+- Do not expose documentation-only elements in service screens (for example: IA tables, annotation numbers, Description panels).
+- Reconstruct screens for real operational usage (menu, form, table, pagination) instead of replicating planning artifacts.
+- In early stages, avoid over-implementing business logic; start with the smallest runnable and verifiable unit.
+- For requests asking for an interactive version, include end-to-end server-template behavior:
+  - Search parameter binding
+  - Filtering
+  - Pagination
+  - Empty-result handling
+- Keep sample data in the service layer and structure code so it can be replaced with MyBatis + PostgreSQL later.
 
-## 아키텍처/패키지 규칙
-- 패키지 구조는 아래를 유지한다.
+## Architecture and Package Rules
+- Keep the package structure below:
   - `com.boauto.backoffice.admin`
   - `com.boauto.backoffice.agent`
   - `com.boauto.backoffice.templates`
   - `com.boauto.backoffice.schema`
-- 화면별 기능은 `admin` 하위 도메인 패키지로 분리한다.
-  - 예: `admin.member`
-- 컨트롤러는 요청/응답 조립 역할만 담당하고, 검색/가공 로직은 서비스로 분리한다.
+- Split screen features by domain package under `admin`.
+  - Example: `admin.member`
+- Controllers should focus on request/response orchestration; filtering/transformation logic belongs in services.
 
-## 뷰(Thymeleaf) 규칙
-- 템플릿은 문서 시안 복제가 아니라 운영 화면 형태로 작성한다.
-- 폼 상태 유지(`th:value`, `th:checked`, `th:selected`)를 기본 적용한다.
-- GET 기반 검색 URL을 사용해 재현 가능한 조회 상태를 유지한다.
-- 반응형(모바일/데스크톱) 깨짐이 없도록 최소한의 미디어쿼리를 포함한다.
+## Thymeleaf View Rules
+- Build templates as operational UI, not as direct planning-document copies.
+- Preserve form state with `th:value`, `th:checked`, and `th:selected`.
+- Use GET-based search URLs so query state is reproducible and shareable.
+- Include minimum responsive behavior for desktop and mobile layouts.
 
-## 품질 규칙
-- 변경 후 `./gradlew test`로 최소 검증을 수행한다.
-- 빌드/테스트 실패 상태로 완료 처리하지 않는다.
-- 기존 사용자 변경사항은 임의로 되돌리지 않는다.
+## Quality Rules
+- Run `./gradlew test` as the minimum verification after changes.
+- Do not mark work complete if build/test is failing.
+- Never revert or discard user changes unless explicitly requested.
 
-## 향후 확장 규칙
-- 엑셀 다운로드, 상세 팝업, 공지사항 등은 화면 스켈레톤 완성 후 기능 단위로 순차 구현한다.
-- DB 연동 전까지는 더미 서비스로 기능 흐름을 보장하고, 연동 시 인터페이스를 유지해 교체 비용을 낮춘다.
+## Future Extension Rules
+- Implement features incrementally after baseline screen completion (for example: Excel download, detail popup, notices).
+- Before DB integration, guarantee feature flow with dummy service data; keep interfaces stable to reduce migration cost during MyBatis/PostgreSQL integration.
