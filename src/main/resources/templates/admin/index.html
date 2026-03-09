@@ -1,56 +1,177 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Backoffice Automation</title>
+    <title>Backoffice Admin</title>
     <style>
         :root {
-            color-scheme: light;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4ecf5 100%);
-            color: #17202a;
+            --bg: #f2f3f7;
+            --surface: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --line: #d1d5db;
+            --primary: #1f4f8f;
+            --menu-bg: #f8fafc;
+            --menu-active: #e8f1ff;
         }
+
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
+            font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+            background: var(--bg);
+            color: var(--text);
         }
 
+        .layout {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+        }
+
+        aside {
+            background: var(--menu-bg);
+            border-right: 1px solid var(--line);
+            padding: 20px 16px;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 18px;
+        }
+
+        .section-title {
+            margin: 18px 8px 8px;
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .menu li a {
+            display: block;
+            padding: 10px 12px;
+            text-decoration: none;
+            color: var(--text);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .menu li a:hover { background: #eef2ff; }
+        .menu li a.active { background: var(--menu-active); color: var(--primary); font-weight: 700; }
+
         main {
-            width: min(720px, calc(100% - 48px));
-            padding: 40px;
-            border-radius: 24px;
-            background: rgba(255, 255, 255, 0.88);
-            box-shadow: 0 20px 60px rgba(23, 32, 42, 0.12);
+            padding: 28px;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 24px;
         }
 
         h1 {
-            margin-top: 0;
-            font-size: clamp(2rem, 4vw, 3rem);
+            margin: 0;
+            font-size: 28px;
         }
 
-        p {
-            margin-bottom: 0;
-            line-height: 1.6;
+        .desc {
+            margin: 12px 0 22px;
+            color: var(--muted);
+            font-size: 14px;
         }
 
-        code {
-            padding: 0.15rem 0.4rem;
-            border-radius: 6px;
-            background: #eef3f8;
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
+        .card {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .card h2 {
+            margin: 0 0 8px;
+            font-size: 16px;
+        }
+
+        .card p {
+            margin: 0 0 12px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--primary);
+            color: #fff;
+            background: var(--primary);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        @media (max-width: 960px) {
+            .layout { grid-template-columns: 1fr; }
+            aside { border-right: 0; border-bottom: 1px solid var(--line); }
         }
     </style>
 </head>
 <body>
-<main>
-    <h1>Backoffice Automation</h1>
-    <p>
-        Spring Boot skeleton is running. Admin UI lives under <code>templates/admin</code>,
-        and package scaffolding is ready for <code>admin</code>, <code>agent</code>, and <code>schema</code>.
-    </p>
-</main>
+<div class="layout">
+    <aside>
+        <div class="brand">BO_IA</div>
+
+        <div class="section-title">라운드 페이 회원 관리</div>
+        <ul class="menu">
+            <li><a class="active" th:href="@{/admin/ia/member-info}">회원정보조회</a></li>
+            <li><a href="#" onclick="return false;">탈퇴회원관리</a></li>
+        </ul>
+
+        <div class="section-title">공지사항</div>
+        <ul class="menu">
+            <li><a href="#" onclick="return false;">공지사항 목록</a></li>
+            <li><a href="#" onclick="return false;">공지 등록/수정</a></li>
+        </ul>
+    </aside>
+
+    <main>
+        <section class="panel">
+            <h1>관리자 대시보드</h1>
+            <p class="desc">IA 문서를 기준으로 메뉴 구조만 반영한 초기 화면입니다. 각 메뉴의 실제 기능 페이지를 순차적으로 확장합니다.</p>
+
+            <div class="cards">
+                <article class="card">
+                    <h2>회원정보조회</h2>
+                    <p>라운드 페이 회원 목록 조회 및 필터 검색</p>
+                    <a class="btn" th:href="@{/admin/ia/member-info}">화면 이동</a>
+                </article>
+                <article class="card">
+                    <h2>탈퇴회원관리</h2>
+                    <p>탈퇴/탈퇴오류 상태 회원 관리 화면 (준비중)</p>
+                </article>
+                <article class="card">
+                    <h2>공지사항 목록</h2>
+                    <p>관리자 공지 리스트 화면 (준비중)</p>
+                </article>
+            </div>
+        </section>
+    </main>
+</div>
 </body>
 </html>
