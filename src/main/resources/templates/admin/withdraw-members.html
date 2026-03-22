@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>라운드 페이 탈퇴 회원 관리</title>
+    <style>
+        :root {
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --line: #d1d5db;
+            --head: #f9fafb;
+            --text: #111827;
+            --muted: #6b7280;
+            --primary: #1f4f8f;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .breadcrumb {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        h1 {
+            margin: 0 0 18px;
+            font-size: 28px;
+        }
+
+        .filters {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 14px;
+            background: #fcfcfd;
+            margin-bottom: 14px;
+        }
+
+        .criteria-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px 18px;
+            margin-bottom: 10px;
+        }
+
+        .criteria-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .criteria-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 32px;
+        }
+
+        .criteria-label {
+            width: 74px;
+            flex: 0 0 74px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+            text-align: right;
+            padding-right: 4px;
+        }
+
+        .criteria-controls {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        input, select {
+            height: 32px;
+            border: 1px solid #c7ced8;
+            border-radius: 6px;
+            padding: 0 8px;
+            background: #fff;
+            font-size: 13px;
+        }
+
+        .text-sm { width: 140px; }
+        .text-date { width: 165px; }
+        .text-md { width: 180px; }
+
+        .quick-range {
+            display: inline-flex;
+            gap: 4px;
+        }
+
+        .quick-range button {
+            height: 26px;
+            display: inline-block;
+            padding: 4px 7px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            color: #374151;
+            font-size: 12px;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .btn {
+            height: 32px;
+            padding: 0 12px;
+            border: 1px solid #9ca3af;
+            border-radius: 6px;
+            background: #fff;
+            color: #1f2937;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn.primary {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn[disabled] {
+            background: #eef1f5;
+            color: #9ca3af;
+            border-color: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .list-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 14px 0 8px;
+            font-size: 13px;
+        }
+
+        .list-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .size-form {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 12px;
+        }
+
+        th, td {
+            border: 1px solid var(--line);
+            padding: 8px 6px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        th {
+            background: var(--head);
+            font-weight: 700;
+        }
+
+        .empty {
+            padding: 24px 8px;
+            color: #6b7280;
+        }
+
+        .pager {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #4b5563;
+        }
+
+        .page-links {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .page-links a {
+            text-decoration: none;
+            color: #4b5563;
+            border: 1px solid var(--line);
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #fff;
+        }
+
+        .page-links a.active {
+            color: #fff;
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .link {
+            margin-top: 12px;
+        }
+
+        .link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        @media (max-width: 900px) {
+            .container { padding: 14px; }
+            .panel { padding: 14px; }
+            table { font-size: 11px; }
+            .criteria-row { gap: 8px 10px; }
+            .criteria-group { width: 100%; }
+            .criteria-label { margin-top: 8px; }
+            .criteria-controls { flex: 1; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="breadcrumb">관리자 &gt; 라운드 페이 회원 관리 &gt; 탈퇴 회원 관리</div>
+
+    <section class="panel">
+        <h1>탈퇴 회원 관리</h1>
+
+        <form class="filters" method="get" th:action="@{/admin/ia/withdraw-members}">
+            <input type="hidden" name="page" value="1">
+            <input type="hidden" name="size" th:value="${criteria.size}">
+
+            <div class="criteria-row">
+                <div class="criteria-group">
+                    <span class="criteria-label">탈퇴일</span>
+                    <div class="criteria-controls">
+                        <input class="text-date" type="date" name="withdrewFrom" th:value="${criteria.withdrewFrom}">
+                        <span>~</span>
+                        <input class="text-date" type="date" name="withdrewTo" th:value="${criteria.withdrewTo}">
+                        <span class="quick-range">
+                            <button type="submit" name="preset" value="YESTERDAY">전일</button>
+                            <button type="submit" name="preset" value="TODAY">당일</button>
+                            <button type="submit" name="preset" value="WEEK">일주일</button>
+                            <button type="submit" name="preset" value="MONTH">1개월</button>
+                            <button type="submit" name="preset" value="ALL">전체</button>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="criteria-group">
+                    <span class="criteria-label">회원 조회</span>
+                    <div class="criteria-controls">
+                        <select name="searchType">
+                            <option value="PHONE" th:selected="${criteria.searchType == 'PHONE'}">휴대폰번호</option>
+                            <option value="CUSTOMER_ID" th:selected="${criteria.searchType == 'CUSTOMER_ID'}">고객ID</option>
+                        </select>
+                        <input class="text-md" type="text" name="keyword" placeholder="검색어 입력" th:value="${criteria.keyword}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn primary" type="submit">검색</button>
+                <a class="btn btn-link" th:href="@{/admin/ia/withdraw-members}">초기화</a>
+            </div>
+        </form>
+
+        <div class="list-head">
+            <div>총 <strong th:text="${result.totalCount}">0</strong>건, 검색결과 <strong th:text="${result.filteredCount}">0</strong>건</div>
+            <div class="list-right">
+                <form class="size-form" method="get" th:action="@{/admin/ia/withdraw-members}">
+                    <input type="hidden" name="withdrewFrom" th:value="${criteria.withdrewFrom}">
+                    <input type="hidden" name="withdrewTo" th:value="${criteria.withdrewTo}">
+                    <input type="hidden" name="searchType" th:value="${criteria.searchType}">
+                    <input type="hidden" name="keyword" th:value="${criteria.keyword}">
+                    <input type="hidden" name="page" value="1">
+                    <span>페이지당</span>
+                    <select name="size" onchange="this.form.submit()">
+                        <option value="10" th:selected="${criteria.size == 10}">10</option>
+                        <option value="25" th:selected="${criteria.size == 25}">25</option>
+                        <option value="50" th:selected="${criteria.size == 50}">50</option>
+                        <option value="100" th:selected="${criteria.size == 100}">100</option>
+                    </select>
+                </form>
+                <button class="btn" type="button" disabled>엑셀 다운로드</button>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 18%;">탈퇴일시</th>
+                <th style="width: 10%;">이름</th>
+                <th style="width: 12%;">휴대폰번호</th>
+                <th style="width: 30%;">고객ID</th>
+                <th style="width: 18%;">유입채널</th>
+                <th style="width: 12%;">수기탈퇴</th>
+            </tr>
+            </thead>
+            <tbody th:if="${result.filteredCount > 0}">
+            <tr th:each="member : ${result.members}">
+                <td th:text="${member.withdrewAt}">2025-03-15 10:20:30</td>
+                <td th:text="${member.name}">홍*동</td>
+                <td th:text="${member.phone}">010-****-1234</td>
+                <td th:text="${member.customerId}">RRP20250314032111</td>
+                <td th:text="${member.inflowChannel}">라운드</td>
+                <td th:text="${member.manualMemo}">haeuny</td>
+            </tr>
+            </tbody>
+            <tbody th:if="${result.filteredCount == 0}">
+            <tr>
+                <td class="empty" colspan="6">검색 결과가 없습니다.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="pager">
+            <div>
+                <span th:text="|${result.pageStart} - ${result.pageEnd} / ${result.filteredCount}|">0 - 0 / 0</span>
+            </div>
+            <div class="page-links">
+                <a th:if="${result.hasPrev}"
+                   th:href="@{/admin/ia/withdraw-members(withdrewFrom=${criteria.withdrewFrom},withdrewTo=${criteria.withdrewTo},searchType=${criteria.searchType},keyword=${criteria.keyword},size=${criteria.size},page=${result.currentPage - 1})}">이전</a>
+
+                <a th:each="pageNo : ${result.pageNumbers}"
+                   th:text="${pageNo}"
+                   th:classappend="${pageNo == result.currentPage} ? 'active'"
+                   th:href="@{/admin/ia/withdraw-members(withdrewFrom=${criteria.withdrewFrom},withdrewTo=${criteria.withdrewTo},searchType=${criteria.searchType},keyword=${criteria.keyword},size=${criteria.size},page=${pageNo})}">1</a>
+
+                <a th:if="${result.hasNext}"
+                   th:href="@{/admin/ia/withdraw-members(withdrewFrom=${criteria.withdrewFrom},withdrewTo=${criteria.withdrewTo},searchType=${criteria.searchType},keyword=${criteria.keyword},size=${criteria.size},page=${result.currentPage + 1})}">다음</a>
+            </div>
+        </div>
+
+        <div class="link">
+            <a th:href="@{/admin}">관리자 홈으로 돌아가기</a>
+        </div>
+    </section>
+</div>
+</body>
+</html>

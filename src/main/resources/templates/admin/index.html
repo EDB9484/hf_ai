@@ -140,7 +140,7 @@
         <div class="section-title">라운드 페이 회원 관리</div>
         <ul class="menu">
             <li><a class="active" th:href="@{/admin/ia/member-info}">회원정보조회</a></li>
-            <li><a href="#" onclick="return false;">탈퇴회원관리</a></li>
+            <li><a th:href="@{/admin/ia/withdraw-members}">탈퇴회원관리</a></li>
         </ul>
 
         <div class="section-title">공지사항</div>
@@ -163,7 +163,8 @@
                 </article>
                 <article class="card">
                     <h2>탈퇴회원관리</h2>
-                    <p>탈퇴/탈퇴오류 상태 회원 관리 화면 (준비중)</p>
+                    <p>탈퇴 일자와 회원 조회 조건으로 검색 가능한 관리 화면</p>
+                    <a class="btn" th:href="@{/admin/ia/withdraw-members}">화면 이동</a>
                 </article>
                 <article class="card">
                     <h2>공지사항 목록</h2>

@@ -67,21 +67,40 @@
             margin-bottom: 14px;
         }
 
-        .row {
+        .criteria-row {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 8px;
+            gap: 12px 18px;
             margin-bottom: 10px;
         }
 
-        .row:last-child { margin-bottom: 0; }
+        .criteria-row:last-child {
+            margin-bottom: 0;
+        }
 
-        .label {
-            min-width: 80px;
+        .criteria-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 32px;
+        }
+
+        .criteria-label {
+            width: 74px;
+            flex: 0 0 74px;
             font-size: 13px;
             font-weight: 700;
             color: #374151;
+            text-align: right;
+            padding-right: 4px;
+        }
+
+        .criteria-controls {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         input, select {
@@ -94,6 +113,7 @@
         }
 
         .text-sm { width: 130px; }
+        .text-date { width: 165px; }
         .text-md { width: 180px; }
 
         .radio {
@@ -107,7 +127,7 @@
         .actions {
             display: flex;
             gap: 8px;
-            justify-content: flex-end;
+            justify-content: center;
             margin-top: 8px;
         }
 
@@ -144,6 +164,35 @@
         }
 
         .list-head strong { font-size: 14px; }
+
+        .list-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .size-form {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .quick-range {
+            display: inline-flex;
+            gap: 4px;
+        }
+
+        .quick-range button {
+            height: 26px;
+            display: inline-block;
+            padding: 4px 7px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            color: #374151;
+            font-size: 12px;
+            background: #fff;
+            cursor: pointer;
+        }
 
         table {
             width: 100%;
@@ -210,7 +259,10 @@
             .container { padding: 14px; }
             .panel { padding: 14px; }
             table { font-size: 11px; }
-            .row { gap: 6px; }
+            .criteria-row { gap: 8px 10px; }
+            .criteria-group { width: 100%; }
+            .criteria-label { margin-top: 8px; }
+            .criteria-controls { flex: 1; }
         }
     </style>
 </head>
@@ -227,66 +279,102 @@
 
         <form class="filters" method="get" th:action="@{/admin/ia/member-info}">
             <input type="hidden" name="page" value="1">
+            <input type="hidden" name="size" th:value="${criteria.size}">
 
-            <div class="row">
-                <span class="label">가입일</span>
-                <input class="text-sm" type="text" name="joinedFrom" placeholder="yyyy-mm-dd" th:value="${criteria.joinedFrom}">
-                <span>~</span>
-                <input class="text-sm" type="text" name="joinedTo" placeholder="yyyy-mm-dd" th:value="${criteria.joinedTo}">
+            <div class="criteria-row">
+                <div class="criteria-group">
+                    <span class="criteria-label">가입일</span>
+                    <div class="criteria-controls">
+                        <input class="text-date" type="date" name="joinedFrom" th:value="${criteria.joinedFrom}">
+                        <span>~</span>
+                        <input class="text-date" type="date" name="joinedTo" th:value="${criteria.joinedTo}">
+                        <span class="quick-range">
+                            <button type="submit" name="preset" value="TODAY">당일</button>
+                            <button type="submit" name="preset" value="WEEK">일주일</button>
+                            <button type="submit" name="preset" value="MONTH">1개월</button>
+                            <button type="submit" name="preset" value="ALL">전체</button>
+                        </span>
+                    </div>
+                </div>
             </div>
 
-            <div class="row">
-                <span class="label">회원 조회</span>
-                <select name="searchType">
-                    <option value="PHONE" th:selected="${criteria.searchType == 'PHONE'}">휴대폰번호</option>
-                    <option value="NAME" th:selected="${criteria.searchType == 'NAME'}">이름</option>
-                    <option value="CUSTOMER_ID" th:selected="${criteria.searchType == 'CUSTOMER_ID'}">고객ID</option>
-                </select>
-                <input class="text-md" type="text" name="keyword" placeholder="검색어 입력" th:value="${criteria.keyword}">
+            <div class="criteria-row">
+                <div class="criteria-group">
+                    <span class="criteria-label">회원 조회</span>
+                    <div class="criteria-controls">
+                        <select name="searchType">
+                            <option value="PHONE" th:selected="${criteria.searchType == 'PHONE'}">휴대폰번호</option>
+                            <option value="NAME" th:selected="${criteria.searchType == 'NAME'}">이름</option>
+                            <option value="CUSTOMER_ID" th:selected="${criteria.searchType == 'CUSTOMER_ID'}">고객ID</option>
+                        </select>
+                        <input class="text-md" type="text" name="keyword" placeholder="검색어 입력" th:value="${criteria.keyword}">
+                    </div>
+                </div>
 
-                <span class="label">생년월일</span>
-                <input class="text-sm" type="text" name="birthDate" placeholder="YY" th:value="${criteria.birthDate}">
+                <div class="criteria-group">
+                    <span class="criteria-label">생년월일</span>
+                    <div class="criteria-controls">
+                        <input class="text-sm" type="text" name="birthDate" placeholder="YY" th:value="${criteria.birthDate}">
+                    </div>
+                </div>
 
-                <span class="label">성별</span>
-                <label class="radio"><input type="radio" name="gender" value="ALL" th:checked="${criteria.gender == 'ALL'}">전체</label>
-                <label class="radio"><input type="radio" name="gender" value="M" th:checked="${criteria.gender == 'M'}">남</label>
-                <label class="radio"><input type="radio" name="gender" value="F" th:checked="${criteria.gender == 'F'}">여</label>
+                <div class="criteria-group">
+                    <span class="criteria-label">성별</span>
+                    <div class="criteria-controls">
+                        <label class="radio"><input type="radio" name="gender" value="ALL" th:checked="${criteria.gender == 'ALL'}">전체</label>
+                        <label class="radio"><input type="radio" name="gender" value="M" th:checked="${criteria.gender == 'M'}">남</label>
+                        <label class="radio"><input type="radio" name="gender" value="F" th:checked="${criteria.gender == 'F'}">여</label>
+                    </div>
+                </div>
             </div>
 
-            <div class="row">
-                <span class="label">회원 상태</span>
-                <label class="radio"><input type="radio" name="memberStatus" value="ALL" th:checked="${criteria.memberStatus == 'ALL'}">전체</label>
-                <label class="radio"><input type="radio" name="memberStatus" value="REGULAR" th:checked="${criteria.memberStatus == 'REGULAR'}">정회원</label>
-                <label class="radio"><input type="radio" name="memberStatus" value="PRE_REGULAR" th:checked="${criteria.memberStatus == 'PRE_REGULAR'}">준회원</label>
-                <label class="radio"><input type="radio" name="memberStatus" value="WITHDRAW_ERROR" th:checked="${criteria.memberStatus == 'WITHDRAW_ERROR'}">탈퇴오류</label>
+            <div class="criteria-row">
+                <div class="criteria-group">
+                    <span class="criteria-label">회원 상태</span>
+                    <div class="criteria-controls">
+                        <label class="radio"><input type="radio" name="memberStatus" value="ALL" th:checked="${criteria.memberStatus == 'ALL'}">전체</label>
+                        <label class="radio"><input type="radio" name="memberStatus" value="REGULAR" th:checked="${criteria.memberStatus == 'REGULAR'}">정회원</label>
+                        <label class="radio"><input type="radio" name="memberStatus" value="PRE_REGULAR" th:checked="${criteria.memberStatus == 'PRE_REGULAR'}">준회원</label>
+                        <label class="radio"><input type="radio" name="memberStatus" value="WITHDRAW_ERROR" th:checked="${criteria.memberStatus == 'WITHDRAW_ERROR'}">탈퇴오류</label>
+                    </div>
+                </div>
 
-                <span class="label">이용 제한</span>
-                <label class="radio"><input type="radio" name="restriction" value="ALL" th:checked="${criteria.restriction == 'ALL'}">전체</label>
-                <label class="radio"><input type="radio" name="restriction" value="NORMAL" th:checked="${criteria.restriction == 'NORMAL'}">정상</label>
-                <label class="radio"><input type="radio" name="restriction" value="ADMIN_LIMITED" th:checked="${criteria.restriction == 'ADMIN_LIMITED'}">관리자 제한</label>
+                <div class="criteria-group">
+                    <span class="criteria-label">이용 제한</span>
+                    <div class="criteria-controls">
+                        <label class="radio"><input type="radio" name="restriction" value="ALL" th:checked="${criteria.restriction == 'ALL'}">전체</label>
+                        <label class="radio"><input type="radio" name="restriction" value="NORMAL" th:checked="${criteria.restriction == 'NORMAL'}">정상</label>
+                        <label class="radio"><input type="radio" name="restriction" value="ADMIN_LIMITED" th:checked="${criteria.restriction == 'ADMIN_LIMITED'}">관리자 제한</label>
+                    </div>
+                </div>
             </div>
 
             <div class="actions">
-                <a class="btn btn-link" th:href="@{/admin/ia/member-info}">초기화</a>
                 <button class="btn primary" type="submit">검색</button>
+                <a class="btn btn-link" th:href="@{/admin/ia/member-info}">초기화</a>
             </div>
         </form>
 
         <div class="list-head">
             <strong th:text="|총 ${result.totalCount}건, 검색결과 ${result.filteredCount}건|"></strong>
-            <div>
-                페이지당
-                <select onchange="window.location.href=this.value">
-                    <option
-                        th:value="@{/admin/ia/member-info(page=1,size=10,joinedFrom=${criteria.joinedFrom},joinedTo=${criteria.joinedTo},searchType=${criteria.searchType},keyword=${criteria.keyword},birthDate=${criteria.birthDate},gender=${criteria.gender},memberStatus=${criteria.memberStatus},restriction=${criteria.restriction})}"
-                        th:selected="${criteria.size == 10}">10</option>
-                    <option
-                        th:value="@{/admin/ia/member-info(page=1,size=20,joinedFrom=${criteria.joinedFrom},joinedTo=${criteria.joinedTo},searchType=${criteria.searchType},keyword=${criteria.keyword},birthDate=${criteria.birthDate},gender=${criteria.gender},memberStatus=${criteria.memberStatus},restriction=${criteria.restriction})}"
-                        th:selected="${criteria.size == 20}">20</option>
-                    <option
-                        th:value="@{/admin/ia/member-info(page=1,size=50,joinedFrom=${criteria.joinedFrom},joinedTo=${criteria.joinedTo},searchType=${criteria.searchType},keyword=${criteria.keyword},birthDate=${criteria.birthDate},gender=${criteria.gender},memberStatus=${criteria.memberStatus},restriction=${criteria.restriction})}"
-                        th:selected="${criteria.size == 50}">50</option>
-                </select>
+            <div class="list-right">
+                <form class="size-form" method="get" th:action="@{/admin/ia/member-info}">
+                    <input type="hidden" name="joinedFrom" th:value="${criteria.joinedFrom}">
+                    <input type="hidden" name="joinedTo" th:value="${criteria.joinedTo}">
+                    <input type="hidden" name="searchType" th:value="${criteria.searchType}">
+                    <input type="hidden" name="keyword" th:value="${criteria.keyword}">
+                    <input type="hidden" name="birthDate" th:value="${criteria.birthDate}">
+                    <input type="hidden" name="gender" th:value="${criteria.gender}">
+                    <input type="hidden" name="memberStatus" th:value="${criteria.memberStatus}">
+                    <input type="hidden" name="restriction" th:value="${criteria.restriction}">
+                    <input type="hidden" name="page" value="1">
+                    <span>페이지당</span>
+                    <select name="size" onchange="this.form.submit()">
+                        <option value="10" th:selected="${criteria.size == 10}">10</option>
+                        <option value="20" th:selected="${criteria.size == 20}">20</option>
+                        <option value="50" th:selected="${criteria.size == 50}">50</option>
+                    </select>
+                </form>
                 <button class="btn" type="button">엑셀 다운로드</button>
             </div>
         </div>

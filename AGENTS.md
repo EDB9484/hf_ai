@@ -87,3 +87,8 @@ This document defines the default rules Codex should follow when generating or m
 ## Future Extension Rules
 - Implement features incrementally after baseline screen completion (for example: Excel download, detail popup, notices).
 - Before DB integration, guarantee feature flow with dummy service data; keep interfaces stable to reduce migration cost during MyBatis/PostgreSQL integration.
+
+## Skills
+A skill is a set of local instructions to follow that is stored in a `SKILL.md` file.
+### Available skills
+- bo-screen-builder: Build Spring Boot + Thymeleaf backoffice screens with controller/service/template separation, GET-based search/filter/pagination, query-state preservation, and empty-result handling for this project. (file: /Users/cjh/AI/hf_ai/skills/public/bo-screen-builder/SKILL.md)
