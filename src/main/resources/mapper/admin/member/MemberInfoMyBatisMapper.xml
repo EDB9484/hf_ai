@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boauto.backoffice.admin.member.MemberInfoMyBatisMapper">
+
+    <sql id="criteriaWhere">
+        <where>
+            <if test="criteria.joinedFrom != null and criteria.joinedFrom != ''">
+                AND joined_at >= CAST(#{criteria.joinedFrom} AS DATE)
+            </if>
+            <if test="criteria.joinedTo != null and criteria.joinedTo != ''">
+                AND joined_at &lt; (CAST(#{criteria.joinedTo} AS DATE) + INTERVAL '1 day')
+            </if>
+
+            <if test="criteria.keyword != null and criteria.keyword != ''">
+                <choose>
+                    <when test="criteria.searchType == 'PHONE'">
+                        AND (
+                            REPLACE(masked_phone, '-', '') LIKE CONCAT('%', REPLACE(#{criteria.keyword}, '-', ''), '%')
+                            OR encrypted_phone = #{criteria.keyword}
+                        )
+                    </when>
+                    <when test="criteria.searchType == 'NAME'">
+                        AND (
+                            masked_name ILIKE CONCAT('%', #{criteria.keyword}, '%')
+                            OR encrypted_name = #{criteria.keyword}
+                        )
+                    </when>
+                    <when test="criteria.searchType == 'CUSTOMER_ID'">
+                        AND customer_id ILIKE CONCAT('%', #{criteria.keyword}, '%')
+                    </when>
+                </choose>
+            </if>
+
+            <if test="criteria.birthDate != null and criteria.birthDate != ''">
+                AND birth_date LIKE CONCAT(#{criteria.birthDate}, '%')
+            </if>
+            <if test="criteria.gender != null and criteria.gender != '' and criteria.gender != 'ALL'">
+                AND gender = #{criteria.gender}
+            </if>
+            <if test="criteria.memberStatus != null and criteria.memberStatus != '' and criteria.memberStatus != 'ALL'">
+                AND member_status = #{criteria.memberStatus}
+            </if>
+            <if test="criteria.restriction != null and criteria.restriction != '' and criteria.restriction != 'ALL'">
+                AND restriction = #{criteria.restriction}
+            </if>
+        </where>
+    </sql>
+
+    <select id="count" resultType="int">
+        SELECT COUNT(*)
+        FROM member
+        <include refid="criteriaWhere"/>
+    </select>
+
+    <select id="find" resultType="com.boauto.backoffice.admin.member.MemberInfoRow">
+        SELECT
+            joined_at AS joinedAt,
+            masked_name AS name,
+            masked_phone AS phone,
+            customer_id AS customerId,
+            birth_date AS birthDate,
+            gender,
+            member_status AS memberStatus,
+            converted_at AS convertedAt,
+            restriction,
+            inflow_channel AS inflowChannel
+        FROM member
+        <include refid="criteriaWhere"/>
+        ORDER BY joined_at DESC
+        LIMIT #{size}
+        OFFSET #{offset}
+    </select>
+</mapper>

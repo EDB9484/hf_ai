@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: hf_ai-postgres
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${DB_NAME:-hf_ai}
+      POSTGRES_USER: ${DB_USERNAME:-hf_ai}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-hf_ai}
+    volumes:
+      - hf-ai-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-hf_ai} -d ${DB_NAME:-hf_ai}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  hf-ai-postgres-data:
