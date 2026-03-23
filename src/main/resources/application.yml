@@ -3,6 +3,17 @@ spring:
     name: hf_ai
   thymeleaf:
     cache: false
+  datasource:
+    url: jdbc:postgresql://192.168.0.10:5432/hf_db
+    username: hf_user
+    password: hf_pass
+    driver-class-name: org.postgresql.Driver
 
 server:
   port: 8080
+
+mybatis:
+  mapper-locations: classpath:/mapper/**/*.xml
+  type-aliases-package: com.boauto.backoffice
+  configuration:
+    map-underscore-to-camel-case: true

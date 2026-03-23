@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boauto.backoffice.admin.dbtest.DbTestMapper">
+
+    <select id="findExistingTables" resultType="com.boauto.backoffice.admin.dbtest.DbTestTable">
+        SELECT
+            table_schema AS tableSchema,
+            table_name AS tableName,
+            table_type AS tableType
+        FROM information_schema.tables
+        WHERE table_schema NOT IN ('pg_catalog', 'information_schema')
+        ORDER BY table_schema, table_name
+    </select>
+
+</mapper>

@@ -1,18 +1,10 @@
 package com.boauto.backoffice;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
-import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
-import org.springframework.boot.jdbc.autoconfigure.DataSourceTransactionManagerAutoConfiguration;
-
-@SpringBootApplication(
-        exclude = {
-                DataSourceAutoConfiguration.class,
-                DataSourceTransactionManagerAutoConfiguration.class,
-                MybatisAutoConfiguration.class
-        }
-)
+@MapperScan("com.boauto.backoffice")
+@SpringBootApplication
 public class BackofficeAutomationApplication {
 
     public static void main(String[] args) {
