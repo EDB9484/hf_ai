@@ -71,4 +71,8 @@ public class MemberInfoSearchCriteria {
     public int getSize() {
         return size;
     }
+
+    public MemberInfoSearchCriteria withoutFilters() {
+        return new MemberInfoSearchCriteria("", "", "PHONE", "", "", "ALL", "ALL", "ALL", 1, size);
+    }
 }

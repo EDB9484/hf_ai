@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
+
 @Controller
 public class AdminHomeController {
 
@@ -32,12 +34,49 @@ public class AdminHomeController {
             @RequestParam(defaultValue = "ALL") String gender,
             @RequestParam(defaultValue = "ALL") String memberStatus,
             @RequestParam(defaultValue = "ALL") String restriction,
+            @RequestParam(defaultValue = "") String preset,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             Model model
     ) {
+        LocalDate now = LocalDate.now();
+        String defaultDate = now.toString();
+        String normalizedFrom = joinedFrom == null ? "" : joinedFrom.trim();
+        String normalizedTo = joinedTo == null ? "" : joinedTo.trim();
+
+        if (normalizedFrom.isBlank()) {
+            normalizedFrom = defaultDate;
+        }
+        if (normalizedTo.isBlank()) {
+            normalizedTo = defaultDate;
+        }
+
+        if (!preset.isBlank()) {
+            switch (preset) {
+                case "TODAY" -> {
+                    normalizedFrom = now.toString();
+                    normalizedTo = now.toString();
+                }
+                case "WEEK" -> {
+                    normalizedFrom = now.minusDays(6).toString();
+                    normalizedTo = now.toString();
+                }
+                case "MONTH" -> {
+                    normalizedFrom = now.minusMonths(1).toString();
+                    normalizedTo = now.toString();
+                }
+                case "ALL" -> {
+                    normalizedFrom = "2000-01-01";
+                    normalizedTo = "2999-12-31";
+                }
+                default -> {
+                    // preset 값이 유효하지 않으면 사용자가 입력한 일자 범위를 유지한다.
+                }
+            }
+        }
+
         MemberInfoSearchCriteria criteria = new MemberInfoSearchCriteria(
-                joinedFrom, joinedTo, searchType, keyword, birthDate, gender, memberStatus, restriction, page, size
+                normalizedFrom, normalizedTo, searchType, keyword, birthDate, gender, memberStatus, restriction, page, size
         );
         MemberInfoSearchResult result = memberInfoService.search(criteria);
 

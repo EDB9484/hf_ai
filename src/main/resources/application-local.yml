@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/hf_ai}
+    username: ${DB_USERNAME:hf_ai}
+    password: ${DB_PASSWORD:hf_ai}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/hf_ai}
+    user: ${DB_USERNAME:hf_ai}
+    password: ${DB_PASSWORD:hf_ai}

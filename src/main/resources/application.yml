@@ -1,8 +1,17 @@
 spring:
   application:
     name: hf_ai
+  profiles:
+    default: local
   thymeleaf:
     cache: false
+  flyway:
+    enabled: true
+
+mybatis:
+  mapper-locations: classpath:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
 
 server:
   port: 8080

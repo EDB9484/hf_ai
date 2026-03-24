@@ -1,0 +1,4 @@
+interface:
+  display_name: "BO 화면 생성"
+  short_description: "Spring Boot + Thymeleaf 백오피스 화면을 빠르게 생성한다."
+  default_prompt: "Spring Boot + Thymeleaf 기반 BO 화면을 생성해줘. Controller는 얇게 유지하고 Service에서 검색/필터/페이징을 처리해. GET 쿼리 상태 보존, 빈 결과 처리, 최소 검증까지 포함해."
